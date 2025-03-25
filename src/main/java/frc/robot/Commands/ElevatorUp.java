@@ -26,8 +26,8 @@ public class ElevatorUp extends Command {
     @Override
     public void execute(){
        
-        double speed = m_ElevatorSubsystem.elevator_cntlr.calculate(m_ElevatorSubsystem.getElevatorEncoder(), setPoint);
-        m_ElevatorSubsystem.elevate(speed);
+        double speed = m_ElevatorSubsystem.elevator_cntlr.calculate(m_ElevatorSubsystem.getDistance(), setPoint);
+        m_ElevatorSubsystem.forward();
     }
 
     @Override
@@ -38,7 +38,7 @@ public class ElevatorUp extends Command {
 
     @Override
     public boolean isFinished(){
-        return false;
+        return m_ElevatorSubsystem.elevator_cntlr.atSetpoint();
     }
 
     

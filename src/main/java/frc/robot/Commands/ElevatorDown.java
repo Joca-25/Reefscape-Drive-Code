@@ -33,13 +33,13 @@ public class ElevatorDown extends Command {
     public void execute(){
        
         double speed = m_ElevatorSubsystem.elevator_cntlr.calculate(m_ElevatorSubsystem.getDistance(), setPoint);
-        m_ElevatorSubsystem.elevate(speed);
-    
+        // m_ElevatorSubsystem.elevate(speed);
+        m_ElevatorSubsystem.Backward();
     }
 
     @Override
     public boolean isFinished(){
-        return m_ElevatorSubsystem.elevator_cntlr.atGoal();
+        return m_ElevatorSubsystem.elevator_cntlr.atSetpoint();
     }
 
 }

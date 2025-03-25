@@ -115,7 +115,7 @@ public class RobotContainer {
     xButton.whileTrue(new PivotShooterUp(shooter,3));
 
     JoystickButton LbBumperButton = new JoystickButton (m_controllerTwo, Button.kLeftBumper.value); // For the "X" button
-     LbBumperButton.whileTrue(new ElevatorDown(elevator,(int)elevator.getDistance()+100));
+     LbBumperButton.whileTrue(new ElevatorDown(elevator,(int)elevator.getDistance()+10));
      
     JoystickButton RbBumperButton = new JoystickButton (m_controllerTwo, Button.kRightBumper.value); // For the "X" button
      RbBumperButton.whileTrue(new ElevatorUp(elevator,3));
