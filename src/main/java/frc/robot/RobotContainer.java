@@ -31,6 +31,7 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -174,7 +175,7 @@ public Command SwerveControllerCommand(){
       List.of(),
      //List.of (new Translation2d(0, .33),new Translation2d(0, .66)),
       // This new code should make the robot go forward 1 meter.
-      new Pose2d(1, 0, new Rotation2d(0)),
+      new Pose2d(1, 0, new Rotation2d()),
       config);
 
 
@@ -197,9 +198,11 @@ public Command SwerveControllerCommand(){
   // Reset odometry to the starting pose of the trajectory.
   m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
 
+ Command turnCommand = new InstantCommand(() -> m_robotDrive.drive(0, 0, Math.toRadians(60), false));
+
   // Run path following command, then stop at the end.
-  Command temp= swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
-    return Commands.sequence(Commands.parallel(temp, new ElevatorUp(null, 0)), 
+  Command temp= swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0,0, false));
+   return Commands.sequence(Commands.sequence(temp, turnCommand, new PivotShooterDown(null, 3)), 
                         new PivotShooterUp(null,3));
 
 
@@ -246,8 +249,8 @@ public Command SwerveControllerCommand(){
 
     // Run path following command, then stop at the end.
     Command temp= swerveControllerCommand.andThen(() -> m_robotDrive.drive(2, 0, 60, false));
-    return Commands.sequence(Commands.parallel(temp, new ElevatorUp(null, 0)), 
-                        new PivotShooterUp(null,3), new PivotShooterDown(null,3));
+    return Commands.sequence(Commands.parallel(temp, new PivotShooterDown(null, 3)), 
+                        new PivotShooterUp(null,3));
     
    }
 
@@ -267,7 +270,7 @@ public Command SwerveControllerCommand(){
       List.of(),
      //List.of (new Translation2d(0, .33),new Translation2d(0, .66)),
       // This new code should make the robot go forward 1 meter.
-      new Pose2d(1, 0, new Rotation2d(0)),
+      new Pose2d(1.88, 0, new Rotation2d(0)),
       config);
 
 
@@ -292,7 +295,7 @@ public Command SwerveControllerCommand(){
 
     // Run path following command, then stop at the end.
     Command temp= swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
-    return Commands.sequence(Commands.parallel(temp, new ElevatorUp(null, 0)), 
+    return Commands.sequence(Commands.sequence(temp, new PivotShooterDown(null, 3)), 
                         new PivotShooterUp(null,3));
     // TrajectoryConfig config = new TrajectoryConfig(
     //   AutoConstants.kMaxSpeedMetersPerSecond,
