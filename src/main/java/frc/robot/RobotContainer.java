@@ -16,6 +16,7 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Commands.ElevatorDown;
 import frc.robot.Commands.ElevatorUp;
 import frc.robot.Commands.PivotShooterDown;
@@ -48,7 +49,7 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final ShooterSubsystem shooter;
-  private final ElevatorSubsystem elevator; 
+  final ElevatorSubsystem elevator; 
   
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -115,10 +116,10 @@ public class RobotContainer {
     xButton.whileTrue(new PivotShooterUp(shooter,3));
 
     JoystickButton LbBumperButton = new JoystickButton (m_controllerTwo, Button.kLeftBumper.value); // For the "X" button
-     LbBumperButton.whileTrue(new ElevatorDown(elevator,(int)elevator.getDistance()+100));
+     LbBumperButton.whileTrue(new ElevatorDown(elevator,(int)SmartDashboard.getNumber("ele_Setpoint", 300)));
      
     JoystickButton RbBumperButton = new JoystickButton (m_controllerTwo, Button.kRightBumper.value); // For the "X" button
-     RbBumperButton.whileTrue(new ElevatorUp(elevator,3));
+     RbBumperButton.whileTrue(new ElevatorUp(elevator,300));
     
      
   }
@@ -428,20 +429,20 @@ public Command SwerveControllerCommand(){
       return null;
   }
 
-  //public Command t_PivotAngles(){}
-    
-  //Returns runcommand, returns the command that tells it to run at a certain speed
-  public void Forward(SparkMax motor, int speed){
-    // RunCommand rc = new RunCommand(
-    //         () -> motor.set(speed),0
-    //        );
+  //   //public Command t_PivotAngles(){}
+      
+  //   //Returns runcommand, returns the command that tells it to run at a certain speed
+  //   public void Forward(SparkMax motor, int speed){
+  //     // RunCommand rc = new RunCommand(
+  //     //         () -> motor.set(speed),0
+  //     //        );
 
-    
-  }
-  public void Backward(SparkMax motor, int speed){
-    // return RunCommand(
-//              () -> motor.set(-speed,9
-// );
-  }
+      
+  //   }
+  //   public void Backward(SparkMax motor, int speed){
+  //     // return RunCommand(
+  // //              () -> motor.set(-speed,9
+  // // );
+  //   }
 }
   //if commands don't work we can use periodic
