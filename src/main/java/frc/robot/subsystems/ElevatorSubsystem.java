@@ -21,40 +21,47 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 
-
-/** A hatch mechanism actuated by a single {@link edu.wpi.first.wpilibj.DoubleSolenoid}. */
+/**
+ * A hatch mechanism actuated by a single
+ * {@link edu.wpi.first.wpilibj.DoubleSolenoid}.
+ */
 public class ElevatorSubsystem extends SubsystemBase {
-  
+
   private final SparkMax ElevatorMotor;
   private final RelativeEncoder ElevatorEncoder;
+<<<<<<< HEAD
   private SparkBaseConfig config;
   
+=======
+
+>>>>>>> d2fa5fde2500c1cfbef02432e44aa6bf33dca98f
   private final double kP_elevator = 1,
-  kI_elevator = 0.1,
-  kD_elevator = 0;
+      kI_elevator = 0.1,
+      kD_elevator = 0;
   public ProfiledPIDController elevator_cntlr = new ProfiledPIDController(
-    kP_elevator, kI_elevator, kD_elevator,
-    new TrapezoidProfile.Constraints(5, 10));
+      kP_elevator, kI_elevator, kD_elevator,
+      new TrapezoidProfile.Constraints(5, 10));
 
-  //private final ProfiledPIDController m_controller =
-      //new ProfiledPIDController(
-          //DriveConstants.kTurnP,
-          //0,
-          //0,
-         // new TrapezoidProfile.Constraints(
-             // DriveConstants.kMaxTurnRateDegPerS,
-             // DriveConstants.kMaxTurnAccelerationDegPerSSquared));
-  //private final SimpleMotorFeedforward m_feedforward =
-      //new SimpleMotorFeedforward(
-         // DriveConstants.ksVolts,
-          //DriveConstants.kvVoltSecondsPerDegree,
-          //DriveConstants.kaVoltSecondsSquaredPerDegree);
+  // private final ProfiledPIDController m_controller =
+  // new ProfiledPIDController(
+  // DriveConstants.kTurnP,
+  // 0,
+  // 0,
+  // new TrapezoidProfile.Constraints(
+  // DriveConstants.kMaxTurnRateDegPerS,
+  // DriveConstants.kMaxTurnAccelerationDegPerSSquared));
+  // private final SimpleMotorFeedforward m_feedforward =
+  // new SimpleMotorFeedforward(
+  // DriveConstants.ksVolts,
+  // DriveConstants.kvVoltSecondsPerDegree,
+  // DriveConstants.kaVoltSecondsSquaredPerDegree);
 
-public ElevatorSubsystem(int leftCanId){
+  public ElevatorSubsystem(int leftCanId) {
 
     ElevatorMotor = new SparkMax(leftCanId, MotorType.kBrushless);
     ElevatorEncoder = ElevatorMotor.getEncoder();
     ElevatorEncoder.setPosition(0);
+<<<<<<< HEAD
     // config.encoder.positionConversionFactor(1.2821);
     // ElevatorMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 }
@@ -88,4 +95,41 @@ public double getDistance(){
   
 
  
+=======
+    elevator_cntlr.reset(0);
+    // ElevatorEncoder.setPositionConversionFactor()
+>>>>>>> d2fa5fde2500c1cfbef02432e44aa6bf33dca98f
   }
+
+  public void forward() {
+    ElevatorMotor.set(.1);
+
+  }
+
+  public void Backward() {
+    ElevatorMotor.set(-.1);
+  }
+
+  public void stop() {
+    ElevatorMotor.set(0);
+  }
+
+  public void elevate(double speed) {
+    ElevatorMotor.set(speed);
+  }
+
+  public double getElevatorEncoder() {
+
+    return ElevatorEncoder.getVelocity();
+  }
+
+  public double getDistance() {
+    return ElevatorEncoder.getPosition();
+
+  }
+  public void setPID(double kP,double kI, double kD){
+    elevator_cntlr.setPID(kP, kI, kD);
+
+  }
+
+}

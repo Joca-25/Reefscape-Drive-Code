@@ -9,6 +9,10 @@ import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
+import edu.wpi.first.apriltag.AprilTagDetection;
+import edu.wpi.first.apriltag.AprilTagDetection;
+import edu.wpi.first.apriltag.AprilTagDetector;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.CvSink;
 import edu.wpi.first.cscore.CvSource;
@@ -57,7 +61,7 @@ public class Robot extends TimedRobot {
 
               // Mats are very memory expensive. Lets reuse this Mat.
               Mat mat = new Mat();
-
+              AprilTagFinder aprils = new AprilTagFinder();
               // This cannot be 'true'. The program will never exit if it is. This
               // lets the robot stop this thread when restarting robot code or
               // deploying.
@@ -70,6 +74,7 @@ public class Robot extends TimedRobot {
                   // skip the rest of the current iteration
                   continue;
                 }
+                aprils.process(mat);
                 // Put a rectangle on the image
                 Imgproc.rectangle(
                     mat, new Point(100, 100), new Point(400, 400), new Scalar(255, 255, 255), 5);
@@ -157,7 +162,11 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    SmartDashboard.putNumber("Joystick X ", m_robotContainer.m_driverController.getLeftX());
+    SmartDashboard.putNumber("Elevator Distance", m_robotContainer.elevator.getDistance());
+    double kP_ele = SmartDashboard.getNumber("kP_ele", 1);
+    double kI_ele = SmartDashboard.getNumber("kI_ele", 0.5);
+    double kD_ele = SmartDashboard.getNumber("kD_ele", 0);
+    m_robotContainer.elevator.setPID(kP_ele,kI_ele,kD_ele);
   }
 
   @Override
