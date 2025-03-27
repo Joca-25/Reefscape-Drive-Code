@@ -178,6 +178,79 @@ public Command SwerveControllerCommand(){
       new Pose2d(1, 0, new Rotation2d()),
       config);
 
+    Command turnCommand = new InstantCommand(() -> m_robotDrive.drive(0, 0, Math.toRadians(60), false));
+    
+    Trajectory forwardTrajectory = TrajectoryGenerator.generateTrajectory(
+        // Start at the end of the turn
+        new Pose2d(1, 0, new Rotation2d(Math.toRadians(60))),
+        List.of(),
+        new Pose2d(2, 0, new Rotation2d(Math.toRadians(60))), // Move 1 meter forward
+        config);
+
+  var thetaController = new ProfiledPIDController(
+      AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+ // thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+  SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
+      exampleTrajectory,
+      m_robotDrive::getPose, // Functional interface to feed supplier
+      DriveConstants.kDriveKinematics,
+
+
+
+      // Position controllers
+      new PIDController(AutoConstants.kPXController, 0, 0),
+      new PIDController(AutoConstants.kPYController, 0, 0),
+      thetaController,
+      m_robotDrive::setModuleStates,
+      m_robotDrive);
+
+  SwerveControllerCommand swerveControllerCommand1 = new SwerveControllerCommand(
+        forwardTrajectory,
+        m_robotDrive::getPose, // Functional interface to feed supplier
+        DriveConstants.kDriveKinematics,
+  
+  
+  
+        // Position controllers
+        new PIDController(AutoConstants.kPXController, 0, 0),
+        new PIDController(AutoConstants.kPYController, 0, 0),
+        thetaController,
+        m_robotDrive::setModuleStates,
+        m_robotDrive);
+
+
+  // Reset odometry to the starting pose of the trajectory.
+  m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
+
+  // Run path following command, then stop at the end.
+  Command temp= swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0,0, false));
+   return Commands.sequence(Commands.sequence(temp, turnCommand,swerveControllerCommand1, new PivotShooterDown(null, 3)), 
+                        new PivotShooterUp(null,1));
+
+
+   }
+
+   public Command autoRightSide(){
+       // Create config for trajectory
+     TrajectoryConfig config = new TrajectoryConfig(
+      AutoConstants.kMaxSpeedMetersPerSecond,
+      AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+      // Add kinematics to ensure max speed is actually obeyed
+      .setKinematics(DriveConstants.kDriveKinematics);
+
+  // An example trajectory to follow. All units in meters.
+  Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+      // Start at the origin facing the +X direction
+      new Pose2d(0, 0, new Rotation2d(0)),
+      // Go forward 
+      List.of(),
+     //List.of (new Translation2d(0, .33),new Translation2d(0, .66)),
+      // This new code should make the robot go forward 1 meter.
+      new Pose2d(1, 0, new Rotation2d()),
+      config);
+
+    Command turnCommand = new InstantCommand(() -> m_robotDrive.drive(0, 0, Math.toRadians(-60), false));
 
   var thetaController = new ProfiledPIDController(
       AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
@@ -198,60 +271,12 @@ public Command SwerveControllerCommand(){
   // Reset odometry to the starting pose of the trajectory.
   m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
 
- Command turnCommand = new InstantCommand(() -> m_robotDrive.drive(0, 0, Math.toRadians(60), false));
-
   // Run path following command, then stop at the end.
   Command temp= swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0,0, false));
    return Commands.sequence(Commands.sequence(temp, turnCommand, new PivotShooterDown(null, 3)), 
-                        new PivotShooterUp(null,3));
+                        new PivotShooterUp(null,1));
 
 
-   }
-
-   public Command autoRightSide(){
-       // Create config for trajectory
-    TrajectoryConfig config = new TrajectoryConfig(
-      AutoConstants.kMaxSpeedMetersPerSecond,
-      AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-      // Add kinematics to ensure max speed is actually obeyed
-      .setKinematics(DriveConstants.kDriveKinematics);
-
-    // An example trajectory to follow. All units in meters.
-    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-        // Start at the origin facing the +X direction
-      new Pose2d(0, 0, new Rotation2d(0)),
-      // Go forward 
-      List.of(),
-     //List.of (new Translation2d(0, .33),new Translation2d(0, .66)),
-      // This new code should make the robot go forward 1 meter.
-      new Pose2d(2, 0, new Rotation2d(60)),
-      config);
-
-
-    var thetaController = new ProfiledPIDController(
-      AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-    // thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-      exampleTrajectory,
-      m_robotDrive::getPose, // Functional interface to feed supplier
-      DriveConstants.kDriveKinematics,
-
-      // Position controllers
-      new PIDController(AutoConstants.kPXController, 0, 0),
-      new PIDController(AutoConstants.kPYController, 0, 0),
-      thetaController,
-      m_robotDrive::setModuleStates,
-      m_robotDrive);
-
-    // Reset odometry to the starting pose of the trajectory.
-    m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
-
-    // Run path following command, then stop at the end.
-    Command temp= swerveControllerCommand.andThen(() -> m_robotDrive.drive(2, 0, 60, false));
-    return Commands.sequence(Commands.parallel(temp, new PivotShooterDown(null, 3)), 
-                        new PivotShooterUp(null,3));
-    
    }
 
    public Command autoMiddle(){
@@ -296,7 +321,7 @@ public Command SwerveControllerCommand(){
     // Run path following command, then stop at the end.
     Command temp= swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
     return Commands.sequence(Commands.sequence(temp, new PivotShooterDown(null, 3)), 
-                        new PivotShooterUp(null,3));
+                        new PivotShooterUp(null,1));
     // TrajectoryConfig config = new TrajectoryConfig(
     //   AutoConstants.kMaxSpeedMetersPerSecond,
     //   AutoConstants.kMaxAccelerationMetersPerSecondSquared)
