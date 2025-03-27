@@ -128,6 +128,9 @@ public class Robot extends TimedRobot {
       case "autoMiddle":
         m_autonomousCommand = m_robotContainer.autoMiddle();
         break;
+      case "getAutonomous":
+      m_autonomousCommand = m_robotContainer.getAutonomous();
+      break;
     }
       // String autoSelected = SmartDashboard.getString("Auto Selector",
       // "Default"); switch(autoSelected) { case "My Auto": autonomousCommand

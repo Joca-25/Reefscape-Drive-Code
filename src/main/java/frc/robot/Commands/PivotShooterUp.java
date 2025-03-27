@@ -29,7 +29,7 @@ public class PivotShooterUp extends Command {
     public void execute(){
        
         double speed = m_PivotShooterSubsystem.pivot_cntrlr.calculate(m_PivotShooterSubsystem.getShooterPosition(), setPoint);
-        m_PivotShooterSubsystem.pivot(speed);
+        m_PivotShooterSubsystem.pivot(0.05);
     }
 
     @Override

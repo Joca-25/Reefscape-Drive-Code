@@ -42,8 +42,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
 
     double kShooterForward= 0.1;
-    double kShooterReverse= 0.1;
-    double kPivotForward= 0.1;
+    double kShooterReverse= 0.025;
+    double kPivotForward= 0.025;
     double kPivotReverse = 0.1;
 
     public ShooterSubsystem(int pivotCANId, int shooterCANId){

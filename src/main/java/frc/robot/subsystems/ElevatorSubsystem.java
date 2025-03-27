@@ -29,12 +29,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   private final SparkMax ElevatorMotor;
   private final RelativeEncoder ElevatorEncoder;
-<<<<<<< HEAD
-  private SparkBaseConfig config;
-  
-=======
-
->>>>>>> d2fa5fde2500c1cfbef02432e44aa6bf33dca98f
   private final double kP_elevator = 1,
       kI_elevator = 0.1,
       kD_elevator = 0;
@@ -61,53 +55,17 @@ public class ElevatorSubsystem extends SubsystemBase {
     ElevatorMotor = new SparkMax(leftCanId, MotorType.kBrushless);
     ElevatorEncoder = ElevatorMotor.getEncoder();
     ElevatorEncoder.setPosition(0);
-<<<<<<< HEAD
-    // config.encoder.positionConversionFactor(1.2821);
-    // ElevatorMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-}
-
-public void forward(){
-ElevatorMotor.set(.1);
-
-}
-
-public void Backward(){
-  ElevatorMotor.set(-.1);
-}
-
-
-public void stop(){
-  ElevatorMotor.set(0);
-}
-
-public void elevate(double speed){
-  ElevatorMotor.set(speed);
-}
-
-public double getElevatorEncoder(){
-  return ElevatorEncoder.getPosition();
-}
-
-public double getDistance(){
-  return ElevatorEncoder.getVelocity();
-
-}
-  
-
- 
-=======
     elevator_cntlr.reset(0);
     // ElevatorEncoder.setPositionConversionFactor()
->>>>>>> d2fa5fde2500c1cfbef02432e44aa6bf33dca98f
   }
 
   public void forward() {
-    ElevatorMotor.set(.1);
+    ElevatorMotor.set(.3);
 
   }
 
   public void Backward() {
-    ElevatorMotor.set(-.1);
+    ElevatorMotor.set(-.3);
   }
 
   public void stop() {

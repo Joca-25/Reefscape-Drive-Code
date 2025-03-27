@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.apriltag.AprilTagDetection;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -117,11 +118,7 @@ public class RobotContainer {
     xButton.whileTrue(new PivotShooterUp(shooter,3));
 
     JoystickButton LbBumperButton = new JoystickButton (m_controllerTwo, Button.kLeftBumper.value); // For the "X" button
-<<<<<<< HEAD
-     LbBumperButton.whileTrue(new ElevatorDown(elevator,(int)elevator.getDistance()+10));
-=======
      LbBumperButton.whileTrue(new ElevatorDown(elevator,(int)SmartDashboard.getNumber("ele_Setpoint", 300)));
->>>>>>> d2fa5fde2500c1cfbef02432e44aa6bf33dca98f
      
     JoystickButton RbBumperButton = new JoystickButton (m_controllerTwo, Button.kRightBumper.value); // For the "X" button
      RbBumperButton.whileTrue(new ElevatorUp(elevator,300));
@@ -183,8 +180,7 @@ public Command SwerveControllerCommand(){
       new Pose2d(1, 0, new Rotation2d()),
       config);
 
-    Command turnCommand = new InstantCommand(() -> m_robotDrive.drive(0, 0, Math.toRadians(60), false));
-    
+  
     Trajectory forwardTrajectory = TrajectoryGenerator.generateTrajectory(
         // Start at the end of the turn
         new Pose2d(1, 0, new Rotation2d(Math.toRadians(60))),
@@ -210,19 +206,35 @@ public Command SwerveControllerCommand(){
       m_robotDrive::setModuleStates,
       m_robotDrive);
 
-  SwerveControllerCommand swerveControllerCommand1 = new SwerveControllerCommand(
-        forwardTrajectory,
-        m_robotDrive::getPose, // Functional interface to feed supplier
-        DriveConstants.kDriveKinematics,
+       
+    //          Command rotateUntilAprilTag = new RunCommand(() -> {
+    //            AprilTagDetection[] detections = tagFinder.process(m_robotDrive.getCameraImage());
+    //     if (detections == null || detections.length == 0) {
+    //         m_robotDrive.drive(0, 0, Math.toRadians(30), false); // Keep turning
+    //     }
+    // }, m_robotDrive).until(() -> {
+    //     AprilTagDetection[] detections = tagFinder.process(m_robotDrive.getCameraImage());
+    //     return detections != null && detections.length > 0; // Stop when we detect a tag
+    // });
+
+    // Drive forward toward the detected tag
+    Trajectory approachTagTrajectory = TrajectoryGenerator.generateTrajectory(
+            new Pose2d(1, 0, new Rotation2d(Math.toRadians(60))), // Start where we stopped
+            List.of(),
+            new Pose2d(2, 0, new Rotation2d(Math.toRadians(60))), // Move another meter forward
+            config);
+
+    SwerveControllerCommand driveToTag = new SwerveControllerCommand(
+            approachTagTrajectory,
+            m_robotDrive::getPose,
+            DriveConstants.kDriveKinematics,
+            new PIDController(AutoConstants.kPXController, 0, 0),
+            new PIDController(AutoConstants.kPYController, 0, 0),
+            new ProfiledPIDController(AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints),
+            m_robotDrive::setModuleStates,
+            m_robotDrive
+    );
   
-  
-  
-        // Position controllers
-        new PIDController(AutoConstants.kPXController, 0, 0),
-        new PIDController(AutoConstants.kPYController, 0, 0),
-        thetaController,
-        m_robotDrive::setModuleStates,
-        m_robotDrive);
 
 
   // Reset odometry to the starting pose of the trajectory.
@@ -230,7 +242,7 @@ public Command SwerveControllerCommand(){
 
   // Run path following command, then stop at the end.
   Command temp= swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0,0, false));
-   return Commands.sequence(Commands.sequence(temp, turnCommand,swerveControllerCommand1, new PivotShooterDown(null, 3)), 
+   return Commands.sequence(Commands.sequence(temp, new PivotShooterDown(null, 3)), 
                         new PivotShooterUp(null,1));
 
 
