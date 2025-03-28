@@ -60,7 +60,7 @@ public class Robot extends TimedRobot {
               // Get a CvSink. This will capture Mats from the camera
               CvSink cvSink = CameraServer.getVideo();
               // Setup a CvSource. This will send images back to the Dashboard
-              CvSource outputStream = CameraServer.putVideo("CameraStream", 640, 480);
+              CvSource outputStream = CameraServer.putVideo("Camera Stream", 640, 480);
 
               // Mats are very memory expensive. Lets reuse this Mat.
               Mat mat = new Mat();
@@ -77,8 +77,9 @@ public class Robot extends TimedRobot {
                   // skip the rest of the current iteration
                   continue;
                 }
-                double x = aprils.process(mat,0);
-                mainTab.add("CameraCenters", x);
+                int id = (int) SmartDashboard.getNumber("TagId", 0);
+                double x = aprils.process(mat,id);
+                SmartDashboard.putNumber("Camera Centers", x);
                 // Put a rectangle on the image
                 Imgproc.rectangle(
                     mat, new Point(100, 100), new Point(400, 400), new Scalar(255, 255, 255), 5);
@@ -120,7 +121,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     //m_autonomousCommand = m_robotContainer.getAutonomous();
-    String autoSelected = Shuffleboard.getTab("Main").add("Auto","autoMiddle").getEntry().getString("");
+    String autoSelected = SmartDashboard.getString("Auto","autoMiddle");
    
     switch (autoSelected){
       case "autoLeftSide":
@@ -169,17 +170,17 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    mainTab.add("Elevator Distance", m_robotContainer.elevator.getDistance());
+    SmartDashboard.putNumber("Elevator Distance", m_robotContainer.elevator.getDistance());
     double kP_ele = SmartDashboard.getNumber("kP_ele", 1);
     double kI_ele = SmartDashboard.getNumber("kI_ele", 0.5);
     double kD_ele = SmartDashboard.getNumber("kD_ele", 0);
     m_robotContainer.elevator.setPID(kP_ele,kI_ele,kD_ele); 
-    mainTab.add("Shooter Distance", m_robotContainer.shooter.getShooterPosition());
+    SmartDashboard.putNumber("Shooter Distance", m_robotContainer.shooter.getShooterPosition());
     double kP_shoot = SmartDashboard.getNumber("kP_shoot", 1);
     double kI_shoot = SmartDashboard.getNumber("kI_shoot", 0.5);
     double kD_shoot = SmartDashboard.getNumber("kD_shoot", 0);
     m_robotContainer.elevator.setPID(kP_shoot,kI_shoot,kD_shoot);
-    mainTab.add("Pivot Angle", m_robotContainer.shooter.getPivotPosition());
+    SmartDashboard.putNumber("Pivot Angle", m_robotContainer.shooter.getPivotPosition());
     double kP_piv = SmartDashboard.getNumber("kP_piv", 1);
     double kI_piv = SmartDashboard.getNumber("kI_piv", 0.5);
     double kD_piv = SmartDashboard.getNumber("kD_piv", 0);

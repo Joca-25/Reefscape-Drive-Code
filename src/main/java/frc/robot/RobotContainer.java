@@ -18,8 +18,10 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Commands.ElevatorDown;
 import frc.robot.Commands.ElevatorUp;
+import frc.robot.Commands.FindTag;
 import frc.robot.Commands.PivotShooterDown;
 import frc.robot.Commands.PivotShooterUp;
 import frc.robot.Commands.ShooterInward;
@@ -107,9 +109,11 @@ public class RobotContainer {
     //         () -> m_robotDrive.setX()
     // ));
     
-
-    new JoystickButton(m_driverController, Button.kA.value)
-          .whileTrue(FindAprilTag());
+    //Driver Controller
+    JoystickButton driveXb = new JoystickButton(m_driverController, Button.kA.value);
+    driveXb.whileTrue(new FindTag(m_robotDrive,3));
+    
+    //Controller 2
     JoystickButton aButton = new JoystickButton (m_controllerTwo, Button.kA.value); // For the "A" button
     aButton.whileTrue(new ShooterOutward(shooter,3));
     
@@ -123,7 +127,7 @@ public class RobotContainer {
     xButton.whileTrue(new PivotShooterUp(shooter,3));
 
     JoystickButton LbBumperButton = new JoystickButton (m_controllerTwo, Button.kLeftBumper.value); // For the "X" button
-    LbBumperButton.whileTrue(new ElevatorDown(elevator,(int)mainTab.add("Elevater SetPoint", 300).getEntry().getDouble(300)));
+    LbBumperButton.whileTrue(new ElevatorDown(elevator,(int)SmartDashboard.getNumber("Elevater SetPoint", 300)));
      
     JoystickButton RbBumperButton = new JoystickButton (m_controllerTwo, Button.kRightBumper.value); // For the "X" button
     RbBumperButton.whileTrue(new ElevatorUp(elevator,300));
