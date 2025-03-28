@@ -46,7 +46,7 @@ public class FindTag extends Command {
     @Override
     public boolean isFinished(){
         // return m_drive.atSetpoint();
-        if(x>)
+        return x-img_width>TOLERANCE;
     }
 
     
