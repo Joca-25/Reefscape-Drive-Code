@@ -163,6 +163,8 @@ public Command SwerveControllerCommand(){
 
 
    public Command autoLeftSide(){
+    int x;
+
         // Create config for trajectory
      TrajectoryConfig config = new TrajectoryConfig(
       AutoConstants.kMaxSpeedMetersPerSecond,
@@ -212,7 +214,7 @@ public Command SwerveControllerCommand(){
     //            AprilTagDetection[] detections = tagFinder.process(m_robotDrive.getCameraImage());
     //     if (detections == null || detections.length == 0) {
     //         m_robotDrive.drive(0, 0, Math.toRadians(30), false); // Keep turning
-    //     }
+    //     }   
     // }, m_robotDrive).until(() -> {
     //     AprilTagDetection[] detections = tagFinder.process(m_robotDrive.getCameraImage());
     //     return detections != null && detections.length > 0; // Stop when we detect a tag
@@ -248,6 +250,12 @@ public Command SwerveControllerCommand(){
 
 
    }
+// public Command findTarget(){
+// int nx;
+
+
+
+// }
 
    public Command autoRightSide(){
        // Create config for trajectory
