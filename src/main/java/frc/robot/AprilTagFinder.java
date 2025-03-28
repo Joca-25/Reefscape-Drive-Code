@@ -16,9 +16,10 @@
  */
 package frc.robot;
 
-
+ import java.util.ArrayList;
  import org.opencv.core.Mat;
 
+import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagDetection;
  import edu.wpi.first.apriltag.AprilTagDetector;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -27,6 +28,8 @@ import java.util.List;
  
  public class AprilTagFinder{
      private final AprilTagDetector m_detector = new AprilTagDetector();
+   
+    String [] tags = {"LeftFar", "LeftClose", "Middle","RightFar", "RightClose"};
  
      boolean useNativePoseEst;
  

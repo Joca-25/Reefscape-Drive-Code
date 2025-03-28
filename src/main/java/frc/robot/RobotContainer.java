@@ -39,6 +39,7 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
 import com.revrobotics.spark.SparkMax;
 
 /*
@@ -359,7 +360,7 @@ public Command SwerveControllerCommand(){
    }
 
 
-  public Command getAutonomous() {
+   public Command getAutonomous() {
    
      
     // Create config for trajectory

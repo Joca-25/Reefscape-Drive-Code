@@ -60,12 +60,12 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public void forward() {
-    ElevatorMotor.set(.3);
+    ElevatorMotor.set(.5);
 
   }
 
   public void Backward() {
-    ElevatorMotor.set(-.3);
+    ElevatorMotor.set(-.5);
   }
 
   public void stop() {

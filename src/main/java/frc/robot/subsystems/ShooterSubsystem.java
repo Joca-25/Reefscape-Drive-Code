@@ -53,7 +53,8 @@ public class ShooterSubsystem extends SubsystemBase {
         //Encoders
         pivotEncoder = pivotMotor.getAbsoluteEncoder();
         shooterEncoder = shooterMotor.getAbsoluteEncoder();
-        //shooter_cntlr.setTolerance(0.1);
+        shooter_cntlr.reset(0);
+        pivot_cntrlr.reset(0);
     
     }
 
@@ -99,6 +100,14 @@ public class ShooterSubsystem extends SubsystemBase {
     public double getPivotPosition(){
         return pivotEncoder.getPosition();
     }
+    public void seShooterPID(double kP,double kI, double kD){
+        shooter_cntlr.setPID(kP, kI, kD);
+    
+      }
+      public void setPivotPID(double kP,double kI, double kD){
+        pivot_cntrlr.setPID(kP, kI, kD);
+    
+      }
 
     
    
