@@ -10,7 +10,6 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
 import edu.wpi.first.apriltag.AprilTagDetection;
-import edu.wpi.first.apriltag.AprilTagDetection;
 import edu.wpi.first.apriltag.AprilTagDetector;
 
 import edu.wpi.first.cameraserver.CameraServer;
@@ -19,6 +18,7 @@ import edu.wpi.first.cscore.CvSource;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -39,13 +39,15 @@ public class Robot extends TimedRobot {
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
+  ShuffleboardTab mainTab; 
   private Thread m_visionThread;
 
   @Override
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
+    mainTab = Shuffleboard.getTab("main");
+    m_robotContainer = new RobotContainer(mainTab);
 
     m_visionThread =
         new Thread(
@@ -58,7 +60,7 @@ public class Robot extends TimedRobot {
               // Get a CvSink. This will capture Mats from the camera
               CvSink cvSink = CameraServer.getVideo();
               // Setup a CvSource. This will send images back to the Dashboard
-              CvSource outputStream = CameraServer.putVideo("Rectangle", 640, 480);
+              CvSource outputStream = CameraServer.putVideo("CameraStream", 640, 480);
 
               // Mats are very memory expensive. Lets reuse this Mat.
               Mat mat = new Mat();
@@ -75,8 +77,8 @@ public class Robot extends TimedRobot {
                   // skip the rest of the current iteration
                   continue;
                 }
-              // main.add("cameraCenter", aprils.process(mat));
-              
+                double x = aprils.process(mat,0);
+                mainTab.add("CameraCenters", x);
                 // Put a rectangle on the image
                 Imgproc.rectangle(
                     mat, new Point(100, 100), new Point(400, 400), new Scalar(255, 255, 255), 5);
@@ -118,7 +120,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     //m_autonomousCommand = m_robotContainer.getAutonomous();
-    String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
+    String autoSelected = Shuffleboard.getTab("Main").add("Auto","autoMiddle").getEntry().getString("");
    
     switch (autoSelected){
       case "autoLeftSide":
@@ -167,11 +169,21 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    SmartDashboard.putNumber("Elevator Distance", m_robotContainer.elevator.getDistance());
+    mainTab.add("Elevator Distance", m_robotContainer.elevator.getDistance());
     double kP_ele = SmartDashboard.getNumber("kP_ele", 1);
     double kI_ele = SmartDashboard.getNumber("kI_ele", 0.5);
     double kD_ele = SmartDashboard.getNumber("kD_ele", 0);
-    m_robotContainer.elevator.setPID(kP_ele,kI_ele,kD_ele);
+    m_robotContainer.elevator.setPID(kP_ele,kI_ele,kD_ele); 
+    mainTab.add("Shooter Distance", m_robotContainer.shooter.getShooterPosition());
+    double kP_shoot = SmartDashboard.getNumber("kP_shoot", 1);
+    double kI_shoot = SmartDashboard.getNumber("kI_shoot", 0.5);
+    double kD_shoot = SmartDashboard.getNumber("kD_shoot", 0);
+    m_robotContainer.elevator.setPID(kP_shoot,kI_shoot,kD_shoot);
+    mainTab.add("Pivot Angle", m_robotContainer.shooter.getPivotPosition());
+    double kP_piv = SmartDashboard.getNumber("kP_piv", 1);
+    double kI_piv = SmartDashboard.getNumber("kI_piv", 0.5);
+    double kD_piv = SmartDashboard.getNumber("kD_piv", 0);
+    m_robotContainer.elevator.setPID(kP_piv,kI_piv,kD_piv);
   }
 
   @Override

@@ -17,7 +17,7 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Commands.ElevatorDown;
 import frc.robot.Commands.ElevatorUp;
 import frc.robot.Commands.PivotShooterDown;
@@ -51,16 +51,17 @@ import com.revrobotics.spark.SparkMax;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private final ShooterSubsystem shooter;
+  final ShooterSubsystem shooter;
   final ElevatorSubsystem elevator; 
-  
+  ShuffleboardTab mainTab;
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
   XboxController m_controllerTwo = new XboxController(1);
  /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
-  public RobotContainer() {
+  public RobotContainer(ShuffleboardTab st) {
+    mainTab = st;
     //initialize subsystems
     shooter = new ShooterSubsystem(20,21);
     elevator = new ElevatorSubsystem(22);
@@ -106,6 +107,9 @@ public class RobotContainer {
     //         () -> m_robotDrive.setX()
     // ));
     
+
+    new JoystickButton(m_driverController, Button.kA.value)
+          .whileTrue(FindAprilTag());
     JoystickButton aButton = new JoystickButton (m_controllerTwo, Button.kA.value); // For the "A" button
     aButton.whileTrue(new ShooterOutward(shooter,3));
     
@@ -119,10 +123,10 @@ public class RobotContainer {
     xButton.whileTrue(new PivotShooterUp(shooter,3));
 
     JoystickButton LbBumperButton = new JoystickButton (m_controllerTwo, Button.kLeftBumper.value); // For the "X" button
-     LbBumperButton.whileTrue(new ElevatorDown(elevator,(int)SmartDashboard.getNumber("ele_Setpoint", 300)));
+    LbBumperButton.whileTrue(new ElevatorDown(elevator,(int)mainTab.add("Elevater SetPoint", 300).getEntry().getDouble(300)));
      
     JoystickButton RbBumperButton = new JoystickButton (m_controllerTwo, Button.kRightBumper.value); // For the "X" button
-     RbBumperButton.whileTrue(new ElevatorUp(elevator,300));
+    RbBumperButton.whileTrue(new ElevatorUp(elevator,300));
     
      
   }
@@ -180,7 +184,7 @@ public Command SwerveControllerCommand(){
       List.of(),
      //List.of (new Translation2d(0, .33),new Translation2d(0, .66)),
       // This new code should make the robot go forward 1 meter.
-      new Pose2d(1, 0, new Rotation2d()),
+      new Pose2d(1, 0, new Rotation2d(0)),
       config);
 
   

@@ -16,21 +16,19 @@
  */
 package frc.robot;
 
- import java.util.ArrayList;
+
  import org.opencv.core.Mat;
 
-import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagDetection;
  import edu.wpi.first.apriltag.AprilTagDetector;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 import java.util.List;
  
  public class AprilTagFinder{
      private final AprilTagDetector m_detector = new AprilTagDetector();
-   
-    String [] tags = {"LeftFar", "LeftClose", "Middle","RightFar", "RightClose"};
- 
+    ShuffleboardTab mainTab;
      boolean useNativePoseEst;
  
      public AprilTagFinder() {
@@ -38,24 +36,26 @@ import java.util.List;
  
          //m_detector.addFamily("tag16h5");
          m_detector.addFamily("tag36h11");
+         mainTab = Shuffleboard.getTab("main");
      }
  
-     public AprilTagDetection[] process(Mat picture) {
+     public double process(Mat picture, int id) {
          if (picture.empty()) {
-             return null;
+             return -1;
          }
  
-         var ret = m_detector.detect(picture);
+         AprilTagDetection[] ret = m_detector.detect(picture);
  
          if (ret == null) {
-             return null;
+             return -1;
          }
-         double[] centers = {};
+         double center = -1;
          for(int i=0; i<ret.length;i++){
-            centers[i]=ret[i].getCenterX();
+            if(ret[i].getId()==id){
+                center = ret[i].getCenterX();
+            }
          }
-         SmartDashboard.putNumberArray("centers", centers);
-         return ret;
+         return center;
      }
  
     
